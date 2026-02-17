@@ -1,0 +1,107 @@
+.nf-wrapper {
+  min-height: 100vh;
+
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI";
+  color: #e5e7eb;
+}
+
+/* Card */
+.nf-box {
+  width: 100%;
+  max-width: 420px;
+  padding: 42px 36px;
+  border-radius: 16px;
+  background: linear-gradient(180deg,
+      rgba(20, 27, 48, 0.95),
+      rgba(12, 17, 34, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  animation: slideFade 0.45s ease;
+}
+
+/* 404 badge */
+.nf-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.12);
+  margin-bottom: 18px;
+}
+
+/* Heading */
+.nf-heading {
+  font-size: 2.1em;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+/* Subtext */
+.nf-subtext {
+  font-size: 0.82em;
+  color: #9ca3af;
+  font-weight: 600;
+  line-height: 1.6;
+  margin-bottom: 26px;
+}
+
+/* Buttons */
+.nf-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.nf-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Primary button – SAME AS REGISTER */
+.nf-btn.primary {
+  background: linear-gradient(90deg, #6d6afc, #5a5cf0);
+  color: #fff;
+  border: none;
+}
+
+.nf-btn.primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* Ghost button */
+.nf-btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #c7d2fe;
+}
+
+.nf-btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Animation */
+@keyframes slideFade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

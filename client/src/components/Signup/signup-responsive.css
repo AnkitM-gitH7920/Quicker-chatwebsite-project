@@ -1,0 +1,5 @@
+@media (max-width: 900px) {
+  .signupBody {
+    background-image: url("/login-signup-back-vertical.png");
+  }
+}

@@ -1,0 +1,667 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --background-primary: #2e31405e;
+    --primary-text: #c7c7c7;
+}
+
+
+/* layout design */
+
+
+nav,
+main {
+    margin: 9px 19px;
+    border-radius: 10px;
+}
+
+nav {
+    background-color: var(--background-primary);
+    margin: 9px 19px;
+    padding: 8px 15px;
+    gap: 5px;
+    justify-content: space-between;
+}
+
+main {
+    height: calc(100dvh - 100px);
+}
+
+#chatListContainer {
+    width: 22rem;
+    min-width: 22rem;
+    min-height: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* UI */
+.appName {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: #ffffff;
+    letter-spacing: 0.4px;
+    transform: skewX(-6deg);
+}
+
+.userProfile {
+    position: relative;
+    gap: 11px;
+    margin: 4px 0px;
+    background-color: rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 9px 15px;
+}
+
+.userFullName {
+    color: var(--primary-text);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.avatar {
+    height: 30px;
+    width: 30px;
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.isOnlineStatusGreenDot {
+    content: "";
+    position: absolute;
+    left: 36px;
+    bottom: 7px;
+    background-color: #19d919;
+    height: 11px;
+    width: 11px;
+    border-radius: 100px;
+    z-index: 100;
+}
+
+.profile-tooltip {
+    color: var(--primary-text);
+    padding: 7px 13px;
+    background-color: rgb(44, 45, 51);
+    border-radius: 7px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* #chatListContainer Designs */
+#chatListContainer {
+    border-radius: 9px;
+    border: 0.5px solid #7e7c7c8e;
+}
+
+.chatListHead {
+    justify-content: space-between;
+    padding: 15px 20px 4px 20px;
+}
+
+.chats-text {
+    letter-spacing: 2px;
+    font-size: 1.59rem;
+    font-weight: 600;
+    color: rgb(206, 206, 206);
+}
+
+#addChatButton,
+#chatOptionsButton {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    margin: 0px 4px;
+    padding: 7px;
+    border-radius: 100px;
+    transition: background-color 0.4s;
+}
+
+#addChatButton:hover,
+#chatOptionsButton:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#addChatButton img {
+    height: 1.2rem;
+    width: 1.2rem;
+}
+
+#chatOptionsButton img {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+.chatOperationsBox {
+    position: absolute;
+    top: 150px;
+    z-index: 10000;
+    left: 320px;
+    padding: 9px;
+    height: fit-content;
+    border-radius: 9px;
+    flex-direction: column;
+    gap: 5px;
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: top left;
+    transition: all 0.2s;
+    backdrop-filter: blur(100px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+
+.chatOperationsButtons {
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: #d4d3d3;
+    font-size: 15px;
+    padding: 5px 10px;
+    gap: 6px;
+    transition: background-color 0.2s, color 0.2s;
+    cursor: pointer;
+    border-radius: 9px;
+    font-weight: 500;
+}
+
+.chatOperationsBox ul li:last-child button {
+    /*Refers to Log out button*/
+    margin-top: 20px;
+
+}
+
+.chatOperationsBox ul li:last-child button::before {
+    content: "";
+    position: absolute;
+    bottom: 59px;
+    left: 17px;
+    height: 1px;
+    width: 82%;
+    background-color: #a5a5a5;
+}
+
+.chatOperationsBox ul li:last-child button:hover {
+    background-color: rgba(255, 0, 0, 0.137);
+    color: rgb(255, 137, 137);
+}
+
+.chatOperationsButtons:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chatOperationsButtons svg {
+    height: 30px;
+    width: 30px;
+}
+
+.chatList {
+    padding: 10px;
+    height: calc(100% - 60px);
+    overflow: auto;
+    margin-right: 5px;
+    border-radius: 19px;
+}
+
+.chatList::-webkit-scrollbar {
+    background-color: transparent;
+    width: 5px;
+}
+
+.chatList::-webkit-scrollbar-thumb {
+    width: 2px;
+    border-radius: 100px;
+    background-color: rgba(175, 175, 175, 0.651);
+}
+
+.chat {
+    margin: 2px 0px;
+    color: rgb(226, 226, 226);
+    padding: 10px;
+    border-radius: 9px;
+    gap: 10px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chat:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+
+}
+
+.chatInfo {
+    flex: 1;
+    justify-content: space-between;
+}
+
+.chatInfoRight {
+    flex-direction: column;
+}
+
+.chatUserAvatar {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 100px;
+}
+
+.chatUserAvatar img {
+    min-height: 3.1rem;
+    min-width: 3.1rem;
+    height: 3.1rem;
+    width: 3.1rem;
+}
+
+.chatInfoRight {
+    flex: 0.9;
+}
+
+.chatInfoRight>div {
+    justify-content: left;
+}
+
+.chatUserFullname {
+    width: 160px;
+    font-size: 0.99rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chatUserLastMessage {
+    font-size: 0.8rem;
+    color: #a5a5a5;
+    white-space: nowrap;
+    overflow: clip;
+    text-overflow: ellipsis;
+    width: 140px;
+    max-width: 140px;
+}
+
+.lastChatDate {
+    color: #a5a5a5;
+    font-size: 0.69rem;
+}
+
+.lastMessageIcons {
+    height: 20px;
+    width: 20px;
+    margin: 0px 2px;
+}
+
+/* For chat operation box opening and closing animations */
+.onclickScaleOptionsContainer {
+    transform: scale(1);
+    transform-origin: top left;
+    opacity: 1;
+}
+
+/* uploaded avatar image should be  */
+.avatar>img {
+    height: 2.0rem;
+    width: 2.0rem;
+}
+
+
+/* Select chat display container */
+#chatDisplayContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 9px;
+    margin: 0px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: url("src/assets/chat-background.png");
+    background-position: center;
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+.selectedChatAvatar {
+    height: 40px;
+    width: 40px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+}
+
+.selectedChatAvatar img {
+    height: 2.8rem;
+    width: 2.8rem;
+}
+
+.selectedChatUsername {
+    color: #d4d3d3;
+    font-weight: 600;
+    margin: 0px 10px;
+    cursor: pointer;
+}
+
+.chatDisplayContainerHead {
+    position: relative;
+    justify-content: space-between;
+    background: transparent;
+    margin: 0;
+    padding: 8px 15px;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(60px);
+}
+
+.selectChatOperationButtons {
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    margin: 0px 4px;
+    height: 40px;
+    width: 40px;
+    border-radius: 9px;
+    transition: all 0.3s;
+}
+
+.selectChatOperationButtons:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.selectChatOperationButtons svg {
+    height: 25px;
+    width: 25px;
+}
+
+.selectedChatOptionDropdown {
+    position: absolute;
+    right: 55px;
+    top: 150px;
+    height: fit-content;
+    width: 200px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: top right;
+    transition: all 0.3s;
+    z-index: 999999;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(100px);
+    padding: 5px 8px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+}
+
+.onclickScaleSelectedChatOptions {
+    transform: scale(1);
+    transform-origin: top right;
+    opacity: 1;
+}
+
+.selectedChatOptionDropdown ul {
+    flex-direction: column;
+    gap: 3px;
+}
+
+.selectedChatOptionDropdown ul li {
+    gap: 6px;
+    cursor: pointer;
+    padding: 7px 10px;
+    color: rgb(196, 196, 196);
+    transition: all 0.3s;
+    border-radius: 10px;
+}
+
+.selectedChatOptionDropdown ul li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.selectedChatOptionDropdown ul li svg {
+    height: 25px;
+    width: 25px;
+}
+
+.selectedChatOptionDropdown ul li span {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.selectedChatOptionDropdown ul li:nth-child(6) {
+    margin-top: 20px;
+}
+
+.selectedChatOptionDropdown ul li:nth-child(6)::before {
+    content: "";
+    height: 1px;
+    width: 90%;
+    position: absolute;
+    bottom: 180px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.selectedChatOptionDropdown ul li:nth-child(6):hover,
+.selectedChatOptionDropdown ul li:nth-child(7):hover,
+.selectedChatOptionDropdown ul li:nth-child(8):hover,
+.selectedChatOptionDropdown ul li:nth-child(9):hover {
+    background-color: rgba(255, 0, 0, 0.137);
+    color: rgb(255, 137, 137);
+}
+
+/* chat input box design */
+.chatInputBox {
+    position: absolute;
+    justify-content: space-between;
+    left: calc(100% - 98%);
+    bottom: 2%;
+    width: 96%;
+    height: fit-content;
+    align-items: flex-end;
+    border-radius: 20px;
+    padding: 5px 0px;
+    box-shadow: 0px 0px 5px rgba(171, 130, 247, 0.4);
+    backdrop-filter: blur(60px);
+}
+
+.chatInputButton {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    color: #dfdfdf;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 17px;
+    padding: 5px;
+    margin: 0px 5px;
+    flex: 0 0 auto;
+    align-self: flex-end
+}
+
+.chatInputButton:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.chatInputButton svg {
+    transition: transform 0.4s;
+    height: 30px;
+    width: 30px;
+}
+
+#chatInput {
+    flex: 1;
+    min-height: 40px;
+    max-height: 120px;
+    overflow-y: auto;
+    resize: none;
+    word-break: break-word;
+    white-space: pre-wrap;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 0.92rem;
+    color: white;
+    padding: 8px 6px;
+}
+
+#chatInput::-webkit-scrollbar {
+    background-color: transparent;
+    cursor: pointer;
+    width: 5px;
+}
+
+#chatInput::-webkit-scrollbar-thumb {
+    width: 2px;
+    border-radius: 100px;
+    background-color: rgba(175, 175, 175, 0.651);
+}
+
+/* Chat documents attachments options container */
+.attachmentOptionBox {
+    padding: 9px;
+    background-color: rgba(0, 0, 0, 1.0);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    height: fit-content;
+    position: absolute;
+    left: 0px;
+    bottom: 55px;
+    z-index: 1000;
+    border-radius: 10px;
+    transition: opacity 0.3s 0.1s, transform 0.3s cubic-bezier(0, 0, 0.84, 1.11);
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: bottom left;
+}
+
+.attachmentOptionBox ul {
+    flex-direction: column;
+    gap: 4px;
+}
+
+.attachmentOptionBox ul li {
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 9px;
+    gap: 7px;
+    transition: all 0.3s;
+
+}
+
+.attachmentOptionBox ul li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.attachmentOptionBox ul li svg {
+    height: 20px;
+    width: 20px;
+}
+
+.attachmentOptionBox ul li:nth-child(1) {
+    color: #5CC8FF;
+}
+
+.attachmentOptionBox ul li:nth-child(2) {
+    color: #F5B942;
+}
+
+.attachmentOptionBox ul li:nth-child(3) {
+    color: #B18CFF;
+}
+
+.attachmentOptionBox ul li:nth-child(4) {
+    color: #FF6FB1;
+}
+
+.attachmentOptionBox ul li:nth-child(5) {
+    color: #FF7A7A;
+}
+
+.attachmentOptionBox ul li span {
+    font-weight: 500;
+    font-size: 0.94rem;
+    color: #d4d4d4;
+}
+
+.classRotateAddSvg {
+    transform: rotate(135deg);
+}
+
+.scaleAddAttachmentBox {
+    transform: scale(1);
+    opacity: 1;
+    transform-origin: bottom left;
+}
+
+/* Current chat display */
+.currentChatDisplay {
+    height: calc(100% - 135px);
+    gap: 10px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 5px 10px;
+    flex-direction: column;
+    transition: all 0.3s
+}
+
+.currentChatDisplay::-webkit-scrollbar {
+    background-color: transparent;
+    width: 5px;
+
+}
+
+.currentChatDisplay::-webkit-scrollbar-thumb {
+    width: 2px;
+    border-radius: 100px;
+    background-color: rgba(205, 239, 255, 0.082);
+}
+
+.secondPerson,
+.firstPerson {
+    position: relative;
+    max-width: 60%;
+    z-index:0;
+    width: fit-content;
+    height: fit-content;
+    padding: 12px;
+    color: rgba(255, 255, 255, 0.637);
+    backdrop-filter: blur(20px);
+    font-size: 0.92rem;
+    font-weight: 500;
+    word-wrap: break-word;
+    word-break: break-all;
+    word-spacing: normal;
+    text-align: left;
+    box-shadow: 0px 0px 0px 1px rgba(255, 255, 255, 0.2);
+}
+
+.secondPerson {
+    border-radius: 0px 12px 12px 12px;
+    background-color: rgba(0, 0, 0, 0.01);
+    ;
+}
+
+.firstPerson {
+    background: linear-gradient(135deg,
+            rgba(123, 92, 255, 0.9),
+            rgba(88, 74, 214, 0.95));
+    border-radius: 12px 0px 12px 12px;
+    align-self: flex-end;
+}
+.secondPerson>div,
+.firstPerson>div{
+    position: absolute;
+}
+.secondPerson>div>p,
+.firstPerson>div>p{
+    color: rgba(255, 255, 255, 0.5)
+
+}
+.firstPerson>div>img{
+    height: 15px;
+    width: 15px;
+}

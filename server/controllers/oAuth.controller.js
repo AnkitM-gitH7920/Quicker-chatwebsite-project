@@ -3,6 +3,7 @@ import APIError from "../utilities/APIError.js";
 import axios from "axios";
 import User from "../models/users.models.js";
 import generateAccessAndRefreshTokens from "../utilities/genAccessAndRefToken.js";
+import { secureCookieOptions } from "../utilities/secureCookieOptions.js";
 
 const googleLogin = asyncHandler(async (req, res) => {
     const oAuthURL = `https://accounts.google.com/o/oauth2/v2/auth?` + new URLSearchParams({
@@ -55,24 +56,12 @@ const googleLoginCallback = asyncHandler(async (req, res, next) => {
     } catch (error) { return next(error) }
 
     let { accessToken, refreshToken } = await generateAccessAndRefreshTokens(googleLoggedInUser);
-    if (!accessToken || !refreshToken) {
-        throw new APIError(500, "Something went wrong while providing session ID", "SERVER_ERROR");
-    }
+    if (!accessToken || !refreshToken) { throw new APIError(500, "Something went wrong while providing session ID", "SERVER_ERROR") }
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 15 * 60 * 1000,
-        })
-        .cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 30 * 24 * 60 * 60 * 1000,
-        })
+        .cookie("accessToken", accessToken, { ...secureCookieOptions, maxAge: 45 * 60 * 1000, })
+        .cookie("refreshToken", refreshToken, { ...secureCookieOptions, maxAge: 30 * 24 * 60 * 60 * 1000, })
         .redirect(`${process.env.DEPLOYED_FRONTEND_URL}/home`)
 });
 

@@ -1,0 +1,118 @@
+.serverResponseDisplayBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    opacity: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(35px);
+    z-index: 10000;
+    transition: all 0.5s;
+}
+
+.serverResponseDisplayBg.showResponseDisplay {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.serverResponseDisplay {
+    position: absolute;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.7),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 55px 20px 14px 20px;
+    border-radius: 19px;
+    width: 380px;
+    animation: responseDisplayDrop 0.35s ease;
+}
+
+.collapseResponseDisplay {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    cursor: pointer;
+    padding: 5px;
+    background: transparent;
+    transition: background-color 0.4s;
+    border: none;
+    outline: none;
+    border-radius: 12px;
+}
+
+.collapseResponseDisplay svg {
+    height: 25px;
+    width: 25px;
+    color: white;
+}
+
+.collapseResponseDisplay:hover {
+    background-color: rgba(180, 180, 180, 0.12);
+}
+
+.responseDisplayHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.textCode {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: #c7d2fe;
+    background: rgba(99, 102, 241, 0.16);
+    padding: 4px 8px;
+    border-radius: 999px;
+}
+
+.statusCode {
+    letter-spacing: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #a5b4fc;
+    background: rgba(99, 102, 241, 0.1);
+    padding: 4px 10px;
+    border-radius: 10px;
+}
+
+.responseMessage {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #e5e7eb;
+    opacity: 0.9;
+    padding-top: 6px;
+}
+
+.responseDisplayOptRedirection {
+    color: #0084ff;
+    gap: 5px;
+    margin-top: 15px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.responseDisplayOptRedirection svg {
+    height: 15px;
+    width: 15px;
+}
+
+@keyframes responseDisplayDrop {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}

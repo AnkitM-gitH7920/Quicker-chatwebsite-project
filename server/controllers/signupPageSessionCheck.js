@@ -36,14 +36,14 @@ function jwtErrorHandler(err) {
 }
 
 const signupSessionCheckingController = asyncHandler(async (req, res, next) => {
-    let accessToken = req.header("Authorization")?.replace("Bearer ", "")
+    let accessToken = req.cookies?.accessToken;
     if (accessToken === undefined || !accessToken) {
         throw new APIError(401, "Access token not found", "AUTHORIZATION_ERROR")
     }
 
     let decodedAccessToken
     try {
-        decodedAccessToken = await jwt.verify(accessToken, process.env.JWT_ACCESSTOKEN_SECRET)
+        decodedAccessToken = jwt.verify(accessToken, process.env.JWT_ACCESSTOKEN_SECRET)
         console.log(decodedAccessToken)
 
     } catch (jwtError) {

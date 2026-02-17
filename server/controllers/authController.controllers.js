@@ -60,9 +60,7 @@ const signupController = asyncHandler(async (req, res, next) => {
 const loginController = asyncHandler(async (req, res, next) => {
   let { email, password } = req.body;
 
-  if (!email || !password) {
-    throw new APIError(400, "Important fields are required", "USER_ERROR");
-  }
+  if (!email || !password) { throw new APIError(400, "Important fields are required", "USER_ERROR"); }
 
   const errors = validationResult(req);
   if (!errors.isEmpty() && errors.errors[0].path === "email") { throw new APIError(400, errors.errors[0].msg, "USER_ERROR"); }
@@ -75,11 +73,9 @@ const loginController = asyncHandler(async (req, res, next) => {
       throw new APIError(404, "User is not registered", "NOT_FOUND");
     }
 
-    if (loggedInUser.provider === "google") {
-      throw new APIError(400, "This account was created using Google. Please continue with Google sign-in", "USER_ERROR");
-    }
+    if (loggedInUser.provider === "google") { throw new APIError(400, "This account was created using Google. Please continue with Google sign-in", "USER_ERROR") }
 
-    const compareResult = await loggedInUser.compareEncryptedPassword(password);
+    const compareResult = await loggedInUser.compareEncryptedPassword(password)
     if (!compareResult) { throw new APIError(401, "Email and password combination is incorrect", "USER_ERROR") }
 
   } catch (loginAttemptError) {
@@ -100,7 +96,7 @@ const loginController = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .cookie("requestOtpSession", requestOtpSession, { httpOnly: true, secure: true, sameSite: "none", maxAge: 5 * 60 * 1000 })
+    .cookie("requestOtpSession", requestOtpSession, { ...secureCookieOptions, maxAge: 5 * 60 * 1000 })
     .json(new APIResponse(true, 200, "User found", process.env.DEPLOYED_FRONTEND_URL + "/verify-otp"))
 });
 
@@ -222,8 +218,9 @@ const requestOTP = asyncHandler(async (req, res, next) => {
 // @To handle for verifying the entered OTP
 const verifyOTP = asyncHandler(async (req, res, next) => {
   const { enteredOTP } = req.body;
+
   if (!enteredOTP || isNaN(enteredOTP) || enteredOTP.toString().length !== 6) { throw new APIError(400, "Invalid OTP format", "USER_ERROR") }
-  
+
   const decodedData = req?.verifyOTPDecodedToken;
   if (!decodedData) { throw new APIError(500, "Something went wrong while verifying user", "SERVER_ERROR") }
 
@@ -234,10 +231,10 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
       userID: decodedData.userID
     });
 
-    if (!storedOTP || storedOTP.expiresAt < Date.now()) { throw new APIError(410, "Entered OTP has expired", "OTP_EXPIRED"); }
+    if (!storedOTP || storedOTP.expiresAt < Date.now()) { throw new APIError(410, "Entered OTP has been expired. Please login again to request a new one", "OTP_EXPIRED"); }
 
     const isOTPCorrect = await storedOTP.compareHashedOTP(OTP)
-    if (!isOTPCorrect) { throw new APIError(400, "Incorrect OTP", "USER_ERROR") }
+    if (!isOTPCorrect) { throw new APIError(400, "Incorrect OTP", "INVALID_OTP") }
 
     user = await User.findById(decodedData.userID);
     if (!user) { throw new APIError(404, "User not found", "NOT_FOUND") }
@@ -249,7 +246,7 @@ const verifyOTP = asyncHandler(async (req, res, next) => {
 
   return res
     .status(200)
-    .cookie("accessToken", accessToken, { ...secureCookieOptions, maxAge: 15 * 60 * 1000 })
+    .cookie("accessToken", accessToken, { ...secureCookieOptions, maxAge: 45 * 60 * 1000 })
     .cookie("refreshToken", refreshToken, { ...secureCookieOptions, maxAge: 30 * 24 * 60 * 60 * 1000 })
     .json(new APIResponse(true, 200, "User logged in successfully", process.env.DEPLOYED_FRONTEND_URL + "/home", { accessToken }))
 });
