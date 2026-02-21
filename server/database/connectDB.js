@@ -9,7 +9,7 @@ async function connectToUsersDB() {
         return;
 
     } catch (error) {
-        console.log(error)
+        console.log("Error in database folder :", error)
         console.log("Error connecting to Users database!!!");
         throw error;
     }

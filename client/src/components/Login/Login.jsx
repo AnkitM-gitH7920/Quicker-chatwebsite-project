@@ -5,14 +5,14 @@ import axios from "axios";
 import validator from "validator";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 
 import { Icon } from "@iconify/react";
 import ProgressLoader from "../Loaders/ProgressLoader.jsx"
 
 function Login() {
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     // useState
     let [email, setEmail] = useState("");
@@ -130,7 +130,7 @@ function Login() {
     }
 
     // ------ Queries and mutations -------
-    const { isSuccess, data, isError, error } = useQuery({
+    const { isSuccess, data } = useQuery({
         queryKey: ["verifyLoggedInUserQuery"],
         queryFn: async () => {
             try {

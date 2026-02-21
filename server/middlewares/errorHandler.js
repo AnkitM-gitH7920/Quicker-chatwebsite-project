@@ -1,9 +1,9 @@
 import APIError from "../utilities/APIError.js";
 
 const errorHandler = (err, req, res, next) => {
-    // console.log(err)
+    console.log(err)
     if (err instanceof APIError) {
-        
+
         return res
             .status(err.status)
             .json({

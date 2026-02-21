@@ -20,8 +20,8 @@ export default function ServerErrorPage(){
           <button className="se-btn primary" onClick={() => window.location.reload()}>
             Try again
           </button>
-          <button className="se-btn ghost" onClick={() => window.location.reload()}>
-            Retry
+          <button className="se-btn ghost" onClick={() => navigate(-1)}>
+            Go back
           </button>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { secureCookieOptions } from "../utilities/secureCookieOptions.js";
 
 const refreshAccessToken = asyncHandler(async (req, res, next) => {
     let refreshToken = req.cookies?.refreshToken;
+    console.log("REFRESH TOKEN : ", refreshToken)
 
     if (!refreshToken) { throw new APIError(401, "Your session has expired, login again to proceed", "REFRESH_TOKEN_EXPIRED") }
 
@@ -49,7 +50,7 @@ const refreshAccessToken = asyncHandler(async (req, res, next) => {
 
     return res
         .status(200)
-        .cookie("accessToken", newAccessToken, { secureCookieOptions, maxAge: 45 * 60 * 1000 })
+        .cookie("accessToken", newAccessToken, { ...secureCookieOptions, maxAge: 45 * 60 * 1000 })
         .json(new APIResponse(true, 200, "New access token provided", null, { accessToken: newAccessToken }));
 })
 

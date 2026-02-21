@@ -1,11 +1,11 @@
 import express from "express";
-import { basicRequest } from "../controllers/generalController.controllers.js";
+import { landingPageRedirectionController } from "../controllers/landingPage.controllers.js";
 
 // middleware
-import verifySecuredJWTTokens from "../middlewares/verifySecuredJWTTokens.js";
+import verifyAndDecodeAccessToken from "../middlewares/verifyAccessToken.js";
 
 const generalRouter = express.Router();
 
-generalRouter.route("/").get(basicRequest);
+generalRouter.route("/").get(verifyAndDecodeAccessToken, landingPageRedirectionController);
 
 export default generalRouter;

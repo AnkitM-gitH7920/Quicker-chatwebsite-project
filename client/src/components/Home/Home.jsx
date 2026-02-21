@@ -41,7 +41,7 @@ function UserDashboard() {
         retryOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnMount: false
-    })
+    });
 
     // animations and page loader functions
     function growTextArea(target) {

@@ -4,6 +4,7 @@ import Signup from "./components/Signup/Signup";
 import OTPVerificationPage from "./components/OTPVerificationPage/OTPVerifcation.jsx";
 import NotFoundPage from "./components/ErrorPages/NotFound.jsx";
 import ServerErrorPage from "./components/ErrorPages/Error.jsx";
+import LandingPage from "./components/LandingPage/LandingPage.jsx";
 
 import { Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -20,6 +21,7 @@ function App() {
 
 
         {/* General routes */}
+        <Route path="/" element={ <LandingPage />}></Route>
         <Route path="/signup" element={<Signup />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/verify-otp" element={<OTPVerificationPage />}></Route>
