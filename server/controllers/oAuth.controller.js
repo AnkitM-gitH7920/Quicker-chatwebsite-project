@@ -61,7 +61,7 @@ const googleLoginCallback = asyncHandler(async (req, res, next) => {
     return res
         .status(200)
         .cookie("accessToken", accessToken, { ...secureCookieOptions, maxAge: 45 * 60 * 1000, })
-        .cookie("refreshToken", refreshToken, { ...secureCookieOptions, maxAge: 30 * 24 * 60 * 60 * 1000, })
+        .cookie("refreshToken", refreshToken, { ...secureCookieOptions, maxAge: 90 * 24 * 60 * 60 * 1000, })
         .redirect(`${process.env.DEPLOYED_FRONTEND_URL}/home`)
 });
 

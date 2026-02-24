@@ -4,8 +4,7 @@ import jwt from "jsonwebtoken";
 
 const verifyAndDecodeAccessToken = asyncHandler(async (req, res, next) => {
      let accessToken = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
-     console.log(accessToken)
-
+     
      if (!accessToken) { throw new APIError(401, "Your session has been expired", "ACCESS_TOKEN_EXPIRED") }
 
      let decodedData;

@@ -27,7 +27,7 @@ function App() {
         <Route path="/verify-otp" element={<OTPVerificationPage />}></Route>
 
         {/* Error routes */}
-        <Route path="/server-error" element={<ServerErrorPage />}></Route>
+        <Route path="/error" element={<ServerErrorPage />}></Route>
         <Route path="*" element={<NotFoundPage />}></Route>
       </Routes>
     </QueryClientProvider>

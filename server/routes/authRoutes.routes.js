@@ -5,7 +5,7 @@ import APIResponse from "../utilities/APIResponse.js";
 // Authorization controllers
 import { signupController, loginController, requestOTP, verifyOTP, logoutUser } from "../controllers/authController.controllers.js";
 import refreshAccessToken from "../middlewares/refreshAccessToken.js";
-import signupSessionCheckingController from "../controllers/signupPageSessionCheck.js";
+// import signupSessionCheckingController from "../controllers/signupPageSessionCheck.js"; <-- deprecated (no need, just added attempt limiter)
 
 // OAuth controllers
 import { googleLogin, googleLoginCallback } from "../controllers/oAuth.controller.js";
@@ -42,7 +42,7 @@ const logOutAttemptLimiter = rateLimit({
 
 
 authRouter.route("/signup")
-     .get(signupSessionCheckingController)
+     // .get(signupSessionCheckingController)
      .post(expressFormatValidator, signupController);
 
 authRouter.route("/login")

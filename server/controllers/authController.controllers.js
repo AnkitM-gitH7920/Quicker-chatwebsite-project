@@ -16,122 +16,122 @@ const convertOTPToString = (enteredOTP) => { return typeof (enteredOTP) === "str
 
 // @To handle registering the user after validating and filtering user input from mallicious scripts
 const signupController = asyncHandler(async (req, res, next) => {
-  let { email, password } = req.body;
+     let { email, password } = req.body;
 
-  if (email === undefined || password === undefined) {
-    throw new APIError(400, "Important fields are required", "USER_ERROR");
-  }
+     if (email === undefined || password === undefined) {
+          throw new APIError(400, "Important fields are required", "USER_ERROR");
+     }
 
-  email = email.trim();
-  password = password.trim();
+     email = email.trim();
+     password = password.trim();
 
-  let errors = validationResult(req);
-  if (!errors.isEmpty() && errors.errors[0].path === "email") {
-    throw new APIError(400, errors.errors[0].msg, "USER_ERROR");
-  }
+     let errors = validationResult(req);
+     if (!errors.isEmpty() && errors.errors[0].path === "email") {
+          throw new APIError(400, errors.errors[0].msg, "USER_ERROR");
+     }
 
-  if (!generalPasswordFormatSchema.validate(password)) {
-    throw new APIError(400, "Password is weak, keep a password with atleast 10 characters", "USER_ERROR");
-  }
+     if (!generalPasswordFormatSchema.validate(password)) {
+          throw new APIError(400, "Password is weak, keep a password with atleast 10 characters", "USER_ERROR");
+     }
 
-  try {
-    await User.create({
-      email: email,
-      password: password
-    })
+     try {
+          await User.create({
+               email: email,
+               password: password
+          })
 
-  } catch (signupAttemptError) {
-    if (signupAttemptError.code === 11000) {
-      if (signupAttemptError.keyValue?.email) {
-        let alreadyRegisteredMailAddress = signupAttemptError.keyValue?.email;
-        throw new APIError(409, `${alreadyRegisteredMailAddress} is already registered`, "CONFLICT")
-      }
-    }
+     } catch (signupAttemptError) {
+          if (signupAttemptError.code === 11000) {
+               if (signupAttemptError.keyValue?.email) {
+                    let alreadyRegisteredMailAddress = signupAttemptError.keyValue?.email;
+                    throw new APIError(409, `${alreadyRegisteredMailAddress} is already registered`, "CONFLICT")
+               }
+          }
 
-    return next(signupAttemptError);
-  }
+          return next(signupAttemptError);
+     }
 
-  return res
-    .status(200)
-    .json(new APIResponse(true, 200, "User registered successfully"));
+     return res
+          .status(200)
+          .json(new APIResponse(true, 200, "User registered successfully"));
 })
 
 // @Provide temporary authorization token to the user, to allow the user to proceed further and request otp from server
 const loginController = asyncHandler(async (req, res, next) => {
-  let { email, password } = req.body;
+     let { email, password } = req.body;
 
-  if (!email || !password) { throw new APIError(400, "Important fields are required", "USER_ERROR"); }
+     if (!email || !password) { throw new APIError(400, "Important fields are required", "USER_ERROR"); }
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty() && errors.errors[0].path === "email") { throw new APIError(400, errors.errors[0].msg, "USER_ERROR"); }
+     const errors = validationResult(req);
+     if (!errors.isEmpty() && errors.errors[0].path === "email") { throw new APIError(400, errors.errors[0].msg, "USER_ERROR"); }
 
-  let loggedInUser;
-  try {
-    loggedInUser = await User.findOne({ email });
-    if (!loggedInUser) {
-      loggedInUser = null;
-      throw new APIError(404, "User is not registered", "NOT_FOUND");
-    }
+     let loggedInUser;
+     try {
+          loggedInUser = await User.findOne({ email });
+          if (!loggedInUser) {
+               loggedInUser = null;
+               throw new APIError(404, "User is not registered", "NOT_FOUND");
+          }
 
-    if (loggedInUser.provider === "google") { throw new APIError(400, "This account was created using Google. Please continue with Google sign-in", "USER_ERROR") }
+          if (loggedInUser.provider === "google") { throw new APIError(400, "This account was created using Google. Please continue with Google sign-in", "USER_ERROR") }
 
-    const compareResult = await loggedInUser.compareEncryptedPassword(password)
-    if (!compareResult) { throw new APIError(401, "Email and password combination is incorrect", "USER_ERROR") }
+          const compareResult = await loggedInUser.compareEncryptedPassword(password)
+          if (!compareResult) { throw new APIError(401, "Email and password combination is incorrect", "USER_ERROR") }
 
-  } catch (loginAttemptError) {
-    console.log(loginAttemptError);
-    return next(loginAttemptError);
-  }
+     } catch (loginAttemptError) {
+          console.log(loginAttemptError);
+          return next(loginAttemptError);
+     }
 
-  const requestOtpSession = jwt.sign({
-    userID: loggedInUser._id,
-    email: email,
-    purpose: "SIGNUP_OTP",
-    otpVerificationPending: true
-  }, process.env.JWT_SECRET,
+     const requestOtpSession = jwt.sign({
+          userID: loggedInUser._id,
+          email: email,
+          purpose: "SIGNUP_OTP",
+          otpVerificationPending: true
+     }, process.env.JWT_SECRET,
 
-    { expiresIn: "5m" });
+          { expiresIn: "5m" });
 
-  if (!requestOtpSession) { throw new APIError(500, "Something went wrong, cannot request OTP at the moment", "SERVER_ERROR") }
+     if (!requestOtpSession) { throw new APIError(500, "Something went wrong, cannot request OTP at the moment", "SERVER_ERROR") }
 
-  return res
-    .status(200)
-    .cookie("requestOtpSession", requestOtpSession, { ...secureCookieOptions, maxAge: 5 * 60 * 1000 })
-    .json(new APIResponse(true, 200, "User found", process.env.DEPLOYED_FRONTEND_URL + "/verify-otp"))
+     return res
+          .status(200)
+          .cookie("requestOtpSession", requestOtpSession, { ...secureCookieOptions, maxAge: 5 * 60 * 1000 })
+          .json(new APIResponse(true, 200, "User found", process.env.DEPLOYED_FRONTEND_URL + "/verify-otp"))
 });
 
 // @To handle request for providing the OTP to the user via nodemailer and storing otp in the database
 const requestOTP = asyncHandler(async (req, res, next) => {
-  let decodedData = req?.requestOTPDecodedToken;
+     let decodedData = req?.requestOTPDecodedToken;
 
-  if (!decodedData) throw new APIError(500, "Something went wrong while verifying user, please try again later", "SERVER_ERROR");
-  if (decodedData.email === undefined || !decodedData?.email) { throw new APIError(400, "Email not provided, cannot send mail at the moment :(") }
+     if (!decodedData) throw new APIError(500, "Something went wrong while verifying user, please try again later", "SERVER_ERROR");
+     if (decodedData.email === undefined || !decodedData?.email) { throw new APIError(400, "Email not provided, cannot send mail at the moment :(") }
 
 
-  let userID = decodedData.userID;
-  let OTP = (crypto.randomInt(100000, 1000000)).toString();
-  let OTPHash = await bcrypt.hash(OTP, 10);
-  try {
-    const storedHashedOTPDocument = await OtpStorage.findOneAndUpdate(
-      { userID },
-      {
-        OTPHash: OTPHash,
-        expiresAt: new Date(Date.now() + 2 * 60 * 1000)
-      },
-      {
-        upsert: true,
-        new: true
-      }
-    );
+     let userID = decodedData.userID;
+     let OTP = (crypto.randomInt(100000, 1000000)).toString();
+     let OTPHash = await bcrypt.hash(OTP, 10);
+     try {
+          const storedHashedOTPDocument = await OtpStorage.findOneAndUpdate(
+               { userID },
+               {
+                    OTPHash: OTPHash,
+                    expiresAt: new Date(Date.now() + 2 * 60 * 1000)
+               },
+               {
+                    upsert: true,
+                    new: true
+               }
+          );
 
-    if (!storedHashedOTPDocument) {
-      throw new APIError();
-    }
+          if (!storedHashedOTPDocument) {
+               throw new APIError();
+          }
 
-  } catch (otpStorageError) { return next(otpStorageError) }
+     } catch (otpStorageError) { return next(otpStorageError) }
 
-  const subject = `Your OTP for login is : ${OTP}`;
-  const OTPMailBody = `
+     const subject = `Your OTP for login is : ${OTP}`;
+     const OTPMailBody = `
             <!DOCTYPE html>
             <html>
               <body style="margin:0;padding:0;background-color:#f4f6f8;font-family:Arial,Helvetica,sans-serif;">
@@ -190,107 +190,102 @@ const requestOTP = asyncHandler(async (req, res, next) => {
               </body>
             </html>
             `;
-  try {
-    await sendHtmlMail(decodedData?.email, subject, OTPMailBody);
+     try {
+          await sendHtmlMail(decodedData?.email, subject, OTPMailBody);
 
-  } catch (nodemailerError) {
-    await OtpStorage.findByIdAndDelete(userID);
-    return next(nodemailerError);
-  }
+     } catch (nodemailerError) {
+          await OtpStorage.findByIdAndDelete(userID);
+          return next(nodemailerError);
+     }
 
-  const verifyOtpSession = jwt.sign({
-    userID: userID,
-    purpose: "SIGNUP_OTP",
-    email: decodedData?.email,
-    otpVerificationPending: true
+     const verifyOtpSession = jwt.sign({
+          userID: userID,
+          purpose: "SIGNUP_OTP",
+          email: decodedData?.email,
+          otpVerificationPending: true
 
-  }, process.env.JWT_SECRET,
-    { expiresIn: "5m" }
-  );
+     }, process.env.JWT_SECRET,
+          { expiresIn: "5m" }
+     );
 
-  return res
-    .status(200)
-    .cookie("verifyOtpSession", verifyOtpSession, { ...secureCookieOptions, maxAge: 5 * 60 * 1000 })
-    .json(new APIResponse(true, 200, "OTP Provided and stored"));
+     return res
+          .status(200)
+          .cookie("verifyOtpSession", verifyOtpSession, { ...secureCookieOptions, maxAge: 5 * 60 * 1000 })
+          .json(new APIResponse(true, 200, "OTP Provided and stored"));
 
 });
 
 // @To handle for verifying the entered OTP
 const verifyOTP = asyncHandler(async (req, res, next) => {
-  const { enteredOTP } = req.body;
+     const { enteredOTP } = req.body;
 
-  if (!enteredOTP || isNaN(enteredOTP) || enteredOTP.toString().length !== 6) { throw new APIError(400, "Invalid OTP format", "USER_ERROR") }
+     if (!enteredOTP || isNaN(enteredOTP) || enteredOTP.toString().length !== 6) { throw new APIError(400, "Invalid OTP format", "USER_ERROR") }
 
-  const decodedData = req?.verifyOTPDecodedToken;
-  if (!decodedData) { throw new APIError(500, "Something went wrong while verifying user", "SERVER_ERROR") }
+     const decodedData = req?.verifyOTPDecodedToken;
+     if (!decodedData) { throw new APIError(500, "Something went wrong while verifying user", "SERVER_ERROR") }
 
-  let user;
-  try {
-    const OTP = convertOTPToString(enteredOTP);
-    const storedOTP = await OtpStorage.findOne({
-      userID: decodedData.userID
-    });
+     let user;
+     try {
+          const OTP = convertOTPToString(enteredOTP);
+          const storedOTP = await OtpStorage.findOne({
+               userID: decodedData.userID
+          });
 
-    if (!storedOTP || storedOTP.expiresAt < Date.now()) { throw new APIError(410, "Entered OTP has been expired. Please login again to request a new one", "OTP_EXPIRED"); }
+          if (!storedOTP || storedOTP.expiresAt < Date.now()) { throw new APIError(410, "Entered OTP has been expired. Please login again to request a new one", "OTP_EXPIRED"); }
 
-    const isOTPCorrect = await storedOTP.compareHashedOTP(OTP)
-    if (!isOTPCorrect) { throw new APIError(400, "Incorrect OTP", "INVALID_OTP") }
+          const isOTPCorrect = await storedOTP.compareHashedOTP(OTP)
+          if (!isOTPCorrect) { throw new APIError(400, "Incorrect OTP", "INVALID_OTP") }
 
-    user = await User.findById(decodedData.userID);
-    if (!user) { throw new APIError(404, "User not found", "NOT_FOUND") }
+          user = await User.findById(decodedData.userID);
+          if (!user) { throw new APIError(404, "User not found", "NOT_FOUND") }
 
-  } catch (err) { return next(err) }
+     } catch (err) { return next(err) }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user);
-  if (!accessToken || !refreshToken) { throw new APIError(500, "Something went wrong while generating access and refresh tokens", "SERVER_ERROR") }
+     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user);
+     if (!accessToken || !refreshToken) { throw new APIError(500, "Something went wrong while generating access and refresh tokens", "SERVER_ERROR") }
 
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, { ...secureCookieOptions, maxAge: 45 * 60 * 1000 })
-    .cookie("refreshToken", refreshToken, { ...secureCookieOptions, maxAge: 30 * 24 * 60 * 60 * 1000 })
-    .json(new APIResponse(true, 200, "User logged in successfully", process.env.DEPLOYED_FRONTEND_URL + "/home", { accessToken }))
+     return res
+          .status(200)
+          .cookie("accessToken", accessToken, { ...secureCookieOptions, maxAge: 45 * 60 * 1000 })
+          .cookie("refreshToken", refreshToken, { ...secureCookieOptions, maxAge: 90 * 24 * 60 * 60 * 1000 })
+          .json(new APIResponse(true, 200, "User logged in successfully", process.env.DEPLOYED_FRONTEND_URL + "/home", { accessToken }))
 });
 
 // @To securely logout user from the website
 const logoutUser = asyncHandler(async (req, res, next) => {
-  let decodedData = req.decodedAccessTokenData;
-  if (!decodedData) {
-    throw new APIError(500, "Something went wrong while verifying user, please try again later", "SERVER_ERROR");
-  }
+     let decodedData = req.decodedAccessTokenData;
+     if (!decodedData) {
+          throw new APIError(500, "Something went wrong while verifying user, please try again later", "SERVER_ERROR");
+     }
 
-  let updatedUser;
-  try {
-    updatedUser = await User.findOneAndUpdate(
-      { _id: decodedData.userID },
-      {
-        refreshToken: null,
-        loggedOffOn: new Date(Date.now())
-      }
-    )
-  } catch (logoutAttemptError) {
-    console.log(mongoDBError.message);
-    return next(logoutAttemptError);
-  }
+     let updatedUser;
+     try {
+          updatedUser = await User.findOneAndUpdate(
+               { _id: decodedData.userID },
+               {
+                    refreshToken: null,
+                    loggedOffOn: new Date(Date.now())
+               }
+          )
+     } catch (logoutAttemptError) {
+          console.log(mongoDBError.message);
+          return next(logoutAttemptError);
+     }
 
-  if (!updatedUser) {
-    throw new APIError(500, "Something went wrong while fetching data from the server", "SERVER_ERROR");
-  }
+     if (!updatedUser) {
+          throw new APIError(500, "Something went wrong while fetching data from the server", "SERVER_ERROR");
+     }
 
-  return res
-    .status(200)
-    .clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 30 * 24 * 60 * 60 * 1000
-    })
-    .json(new APIResponse(true, 200, "User logged out successfully"));
+     return res
+          .status(200)
+          .clearCookie("refreshToken", { ...secureCookieOptions, maxAge: 90 * 24 * 60 * 60 * 1000 })
+          .json(new APIResponse(true, 200, "User logged out successfully"));
 })
 
 export {
-  signupController,
-  loginController,
-  requestOTP,
-  verifyOTP,
-  logoutUser
+     signupController,
+     loginController,
+     requestOTP,
+     verifyOTP,
+     logoutUser
 }

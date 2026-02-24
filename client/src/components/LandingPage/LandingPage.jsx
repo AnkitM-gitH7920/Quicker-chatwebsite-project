@@ -25,7 +25,6 @@ export default function LandingPage() {
                     return response?.data;
 
                } catch (axiosError) {
-                    console.log(axiosError)
                     throw axiosError
                }
           },
@@ -36,14 +35,32 @@ export default function LandingPage() {
      // useEffect
      useEffect(() => {
           if (!isSuccess) return;
-          console.log(data)
-          if (data?.redirectingURL) { window.location.href = "/home" }
+
+          if (data?.redirectingURL) {
+               window.location.href = data.redirectingURL
+               return;
+           }
           console.log("/ API at landing page SUCCESS")
 
      }, [isSuccess, data, navigate])
 
      useEffect(() => {
           if (!isError) return;
+
+          if (error.message === "Network Error") {
+               navigate("/error", {
+                    replace: true,
+                    state: {
+                         retryURL: "/",
+                         goBackURL: "/error",
+                         status: 503,
+                         title: "Network Error",
+                         message: "Unable to connect to the server. Please check your internet connection and try again"
+                    }
+               })
+
+               return;
+          }
 
           if (error.isRefreshTokenExpired) {
                setServerResponseInfo({
@@ -59,20 +76,10 @@ export default function LandingPage() {
                return;
           }
 
-          setServerResponseInfo({
-               status: error.response?.data?.status ?? "500",
-               code: error.response?.data?.code ?? "ERROR",
-               message: error.response?.data?.message ?? "Something went wrong, please try again later"
-          })
-          setResponseDisplayOptRedirectionInfo({
-               redirectingURL: "/report-issue",
-               redirectingTitle: "Report Issue"
-          })
-          setShowServerResponseWindow(true);
-
+          navigate("/error", { replace: true })
           console.log("/ API at landing page FAILED");
 
-     }, [isError, error])
+     }, [isError, error, navigate])
 
      return (
           <>
