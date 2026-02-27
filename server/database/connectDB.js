@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const DB_CONNECTION_STRING = process.env.DB_MONGOSH_CONNECTION_STRING;
 
-async function connectToUsersDB() {
+async function connectToDB() {
     try {
         const connectionInstance = await mongoose.connect(`${DB_CONNECTION_STRING}`, { dbName: "users" });
         console.log("DB connected successfully || PORT: " + connectionInstance.connection.port);
@@ -15,6 +15,6 @@ async function connectToUsersDB() {
     }
 }
 
-export default connectToUsersDB;
+export default connectToDB;
 
 // !! BIG ERROR :- Cannot connect to mongo db atlas

@@ -8,7 +8,7 @@ import refreshAccessToken from "../middlewares/refreshAccessToken.js";
 // import signupSessionCheckingController from "../controllers/signupPageSessionCheck.js"; <-- deprecated (no need, just added attempt limiter)
 
 // OAuth controllers
-import { googleLogin, googleLoginCallback } from "../controllers/oAuth.controller.js";
+import { googleLogin, googleLoginCallback } from "../controllers/oAuth.controllers.js";
 
 // middlewares
 import expressFormatValidator from "../middlewares/expressValidator.js";

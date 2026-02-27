@@ -28,7 +28,7 @@ axiosAPI.interceptors.response.use(
                     console.log(refreshError)
                     if (refreshError.response?.data?.code === "REFRESH_TOKEN_EXPIRED") {
                          // sets info about refreshtoken expiration
-                         refreshError.isRefreshTokenExpired = true;
+                         refreshError.isRefreshTokenExpired = true; // To be added in every file
                     }
                     return Promise.reject(refreshError);
                }

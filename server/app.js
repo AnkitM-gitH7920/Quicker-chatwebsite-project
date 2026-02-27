@@ -25,9 +25,9 @@ app.use(cors({
 // })
 // app.use(limiter);
 
-import generalRouter from "./routes/general.routes.js";
+import mainAppRouter from "./routes/homepage.routes.js";
 import authRouter from "./routes/authRoutes.routes.js";
-app.use("/v1", generalRouter);
+app.use("/v1", mainAppRouter)
 app.use("/v1/auth", authRouter);
 
 

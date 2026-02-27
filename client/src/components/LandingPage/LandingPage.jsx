@@ -52,7 +52,7 @@ export default function LandingPage() {
                     replace: true,
                     state: {
                          retryURL: "/",
-                         goBackURL: "/error",
+                         goBackURL: "/",
                          status: 503,
                          title: "Network Error",
                          message: "Unable to connect to the server. Please check your internet connection and try again"

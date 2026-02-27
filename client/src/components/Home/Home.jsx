@@ -1,13 +1,16 @@
 import "../../css/utilities.css";
 import "../../css/Home.css";
 import "../../css/App.css";
+import "../../css/server-responseDisplay-overlay.css";
 import "tippy.js/animations/scale.css";
 
+import axiosAPI from "../../utils/axiosInterceptor.utils.js";
 import Tippy from "@tippyjs/react";
-import { useRef, useState } from "react";
+import ChatListSkeleton from "../Loaders/SkeletonLoaders/ChatListSkeleton/ChatListSkeleton.jsx";
+import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { createPortal } from "react-dom";
-// import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 // ! Pending Tasks :-
 // ? if the user name is to big then give it a ... at the end
@@ -17,15 +20,59 @@ import { createPortal } from "react-dom";
 function UserDashboard() {
      // useState(s)
      let [message, setMessage] = useState("");
+     let [isNetworkError, setIsNetworkError] = useState(false);
+     let [showServerResponseWindow, setShowServerResponseWindow] = useState(false);
+     let [serverResponseInfo, setServerResponseInfo] = useState({});
+     let [responseDisplayOptRedirectionInfo, setResponseDisplayOptRedirectionInfo] = useState({});
 
      // useRef(s)
      let chatOperationsBox = useRef(null);
      let selectedChatOptionDropDown = useRef(null);
      let addAttachmentSvgReference = useRef(null);
      let addAttachmentsBoxReference = useRef(null);
+     let serverResponseDisplayReference = useRef(null);
 
      //queries
+     const {
+          isSuccess,
+          data,
+          isError,
+          error,
+          isPending
+     } = useQuery({
+          queryKey: ["getUserData"],
+          queryFn: getHomePageUserData,
+          refetchOnWindowFocus: false,
+          retryOnMount: false,
+          refetchOnMount: false
 
+     })
+     if (isSuccess) console.log(data);
+     if (isError) console.log(error);
+     if (isPending) console.log("Query is pending...");
+
+     // async functions
+     async function getHomePageUserData() {
+          try {
+               let dataFetchResponse = await axiosAPI.get("/home");
+               return dataFetchResponse?.data;
+
+
+          } catch (axiosError) {
+               console.log(axiosError);
+               throw axiosError;
+          }
+     }
+
+     // useEffects
+     useEffect(function () {
+          if (!isError) return;
+
+          if (error?.message === "Network Error") setIsNetworkError(true);
+
+          return () => setIsNetworkError(false)
+
+     }, [error, isError])
 
      // animations and page loader functions
      function growTextArea(target) {
@@ -56,7 +103,6 @@ function UserDashboard() {
 
      return (
           <>
-          {/* START BY :- loading truck animation on query pending */}
                <nav className="alignCenter chatAppHead">
                     <div className="favicon alignCenter">
                          <div className="logo">
@@ -84,6 +130,35 @@ function UserDashboard() {
                     </Tippy>
                </nav>
                <main className="flex">
+                    {/* Pop down to display server success response */}
+                    <div ref={serverResponseDisplayReference} className={showServerResponseWindow ? "serverResponseDisplayBg showResponseDisplay" : "serverResponseDisplayBg"} >
+                         <div className="serverResponseDisplay">
+                              <button
+                                   onClick={() => {
+                                        setShowServerResponseWindow(false);
+                                        setTimeout(() => {
+                                             setServerResponseInfo({});
+                                             setResponseDisplayOptRedirectionInfo({})
+                                        }, 300);
+                                   }}
+                                   className="collapseResponseDisplay center">
+                                   <Icon icon="mdi:close"></Icon>
+                              </button>
+                              <div className="responseDisplayHead">
+                                   <span className="textCode">{serverResponseInfo.code}</span>
+                                   <span className="statusCode">{serverResponseInfo.status}</span>
+                              </div>
+                              <p className="responseMessage">
+                                   {serverResponseInfo.message}
+                              </p>
+
+                              {/* optional redirecting url */}
+                              {
+                                   Object.keys(responseDisplayOptRedirectionInfo).length ? <a className="responseDisplayOptRedirection alignCenter" href={responseDisplayOptRedirectionInfo.redirectingURL} target="_blank">{responseDisplayOptRedirectionInfo.redirectingTitle}<Icon icon="mdi:share"></Icon></a> : <div></div>
+                              }
+
+                         </div>
+                    </div>
                     <aside id="chatListContainer">
                          <div className="chatListHead alignCenter">
                               <p className="chats-text">Chats</p>
@@ -114,62 +189,69 @@ function UserDashboard() {
                               </div>
                          </div>
                          <ul className="chatList">
-                              <li className="chat alignCenter">
-                                   <div className="center chatUserAvatar">
-                                        <img src="src/assets/avatar.webp" loading="lazy" alt="Avatar" />
-                                   </div>
-                                   <div className="chatInfo alignCenter">
-                                        <div className="chatInfoRight flex">
-                                             <span className="chatUserFullname">Moksh Sachdeva</span>
-                                             {/* last message icons for :- sticker, deleted message, photos */}
-                                             {/* for groups:- show the name of the user who sent the last message */}
-                                             <div className="alignCenter">
-                                                  <img className="lastMessageIcons" src="src/assets/message-sent.png" alt="" /><span className="alignCenter chatUserLastMessage">Bhai message to padh liya kar</span>
+                              {isPending ? (
+                                   <>
+                                        <ChatListSkeleton />
+                                        <ChatListSkeleton />
+                                        <ChatListSkeleton />
+                                   </>
+                              ) : (
+                                   <>
+                                        <li className="chat alignCenter">
+                                             <div className="center chatUserAvatar">
+                                                  <img src="src/assets/avatar.webp" loading="lazy" alt="Avatar" />
                                              </div>
-                                        </div>
-                                        <div className="chatInfoLeft">
-                                             <span className="lastChatDate">27/11/2025</span> {/*Format :- DD/MM/YYYY */}
-                                        </div>
-                                   </div>
-                              </li>
-                              <li className="chat alignCenter">
-                                   <div className="center chatUserAvatar">
-                                        <img src="src/assets/avatar.webp" loading="lazy" alt="Avatar" />
-                                   </div>
-                                   <div className="chatInfo alignCenter">
-                                        <div className="chatInfoRight flex">
-                                             <span className="chatUserFullname">Kartikey</span>
-                                             {/* last message icons for :- sticker, deleted message, photos */}
-                                             {/* for groups:- show the name of the user who sent the last message */}
-                                             <div className="alignCenter">
-                                                  <img className="lastMessageIcons" src="src/assets/message-read-blue.png" alt="" />
-                                                  <span className="alignCenter chatUserLastMessage">Bhai kya kar raha hai aajkal</span>
+                                             <div className="chatInfo alignCenter">
+                                                  <div className="chatInfoRight flex">
+                                                       <span className="chatUserFullname">Moksh Sachdeva</span>
+                                                       <div className="alignCenter">
+                                                            <img className="lastMessageIcons" src="src/assets/message-sent.png" alt="" /><span className="alignCenter chatUserLastMessage">Bhai message to padh liya kar</span>
+                                                       </div>
+                                                  </div>
+                                                  <div className="chatInfoLeft">
+                                                       <span className="lastChatDate">27/11/2025</span>
+                                                  </div>
                                              </div>
-                                        </div>
-                                        <div className="chatInfoLeft">
-                                             <span className="lastChatDate">27/11/2025</span> {/*Format :- DD/MM/YYYY */}
-                                        </div>
-                                   </div>
-                              </li>
-                              <li className="chat alignCenter">
-                                   <div className="center chatUserAvatar">
-                                        <img src="src/assets/avatar.webp" loading="lazy" alt="Avatar" />
-                                   </div>
-                                   <div className="chatInfo alignCenter">
-                                        <div className="chatInfoRight flex">
-                                             <span className="chatUserFullname">Aryan</span>
-                                             {/* last message icons for :- sticker, deleted message, photos */}
-                                             {/* for groups:- show the name of the user who sent the last message */}
-                                             <div className="alignCenter">
-                                                  <img className="lastMessageIcons" src="src/assets/message-read-blue.png" alt="" />
-                                                  <span className="alignCenter chatUserLastMessage">Meri notebook leerwerwerwer aio</span>
+                                        </li>
+                                        <li className="chat alignCenter">
+                                             <div className="center chatUserAvatar">
+                                                  <img src="src/assets/avatar.webp" loading="lazy" alt="Avatar" />
                                              </div>
-                                        </div>
-                                        <div className="chatInfoLeft">
-                                             <span className="lastChatDate">12/01/2025</span> {/*Format :- DD/MM/YYYY */}
-                                        </div>
-                                   </div>
-                              </li>
+                                             <div className="chatInfo alignCenter">
+                                                  <div className="chatInfoRight flex">
+                                                       <span className="chatUserFullname">Kartikey</span>
+                                                       <div className="alignCenter">
+                                                            <img className="lastMessageIcons" src="src/assets/message-read-blue.png" alt="" />
+                                                            <span className="alignCenter chatUserLastMessage">Bhai kya kar raha hai aajkal</span>
+                                                       </div>
+                                                  </div>
+                                                  <div className="chatInfoLeft">
+                                                       <span className="lastChatDate">27/11/2025</span>
+                                                  </div>
+                                             </div>
+                                        </li>
+                                        <li className="chat alignCenter">
+                                             <div className="center chatUserAvatar">
+                                                  <img src="src/assets/avatar.webp" loading="lazy" alt="Avatar" />
+                                             </div>
+                                             <div className="chatInfo alignCenter">
+                                                  <div className="chatInfoRight flex">
+                                                       <span className="chatUserFullname">Aryan</span>
+                                                       <div className="alignCenter">
+                                                            <img className="lastMessageIcons" src="src/assets/message-read-blue.png" alt="" />
+                                                            <span className="alignCenter chatUserLastMessage">Meri notebook leerwerwerwer aio</span>
+                                                       </div>
+                                                  </div>
+                                                  <div className="chatInfoLeft">
+                                                       <span className="lastChatDate">12/01/2025</span>
+                                                  </div>
+                                             </div>
+                                        </li>
+                                   </>
+                              )
+                              }
+
+
                          </ul>
                     </aside>
                     <aside id="chatDisplayContainer">
