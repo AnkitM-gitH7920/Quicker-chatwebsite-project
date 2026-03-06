@@ -1,5 +1,5 @@
-import "./signup.css";
-import "../../css/server-responseDisplay-overlay.css";
+import "../css/signup.css";
+import "../css/server-responseDisplay-overlay.css";
 
 // Library imports
 import validator from "validator";
@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 // Components imports
 import { Icon } from "@iconify/react";
-import ProgressLoader from "../Loaders/ProgressLoader.jsx";
+import ProgressLoader from "./Loaders/ProgressLoader.jsx";
 
 
 function Signup() {

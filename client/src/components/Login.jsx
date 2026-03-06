@@ -1,5 +1,5 @@
-import "./login.css";
-import "../../css/server-responseDisplay-overlay.css";
+import "../css/login.css";
+import "../css/server-responseDisplay-overlay.css";
 
 import axios from "axios";
 import validator from "validator";
@@ -9,7 +9,7 @@ import { useState, useRef, useEffect } from "react";
 
 
 import { Icon } from "@iconify/react";
-import ProgressLoader from "../Loaders/ProgressLoader.jsx"
+import ProgressLoader from "./Loaders/ProgressLoader.jsx"
 
 function Login() {
     // const navigate = useNavigate()

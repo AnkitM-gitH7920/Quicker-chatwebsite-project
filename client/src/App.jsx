@@ -1,10 +1,10 @@
 import UserDashboard from "./components/Home/Home";
-import Login from "./components/Login/Login";
-import Signup from "./components/Signup/Signup";
-import OTPVerificationPage from "./components/OTPVerificationPage/OTPVerifcation.jsx";
+import Login from "./components//Login";
+import Signup from "./components/Signup";
+import OTPVerificationPage from "./components/OTPVerification.jsx";
 import NotFoundPage from "./components/ErrorPages/NotFound.jsx";
 import ServerErrorPage from "./components/ErrorPages/Error.jsx";
-import LandingPage from "./components/LandingPage/LandingPage.jsx";
+import LandingPage from "./components/LandingPage.jsx";
 
 import { Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

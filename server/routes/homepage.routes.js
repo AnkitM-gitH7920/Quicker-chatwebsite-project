@@ -10,10 +10,10 @@ import verifyAndDecodeAccessToken from "../middlewares/verifyAccessToken.js";
 const mainAppRouter = express.Router();
 
 mainAppRouter.route("/")
-.get(verifyAndDecodeAccessToken, landingPageRedirectionController);
+     .get(verifyAndDecodeAccessToken, landingPageRedirectionController);
 
 mainAppRouter.route("/home")
-.get(loadHomePageUserData)
+     .get(verifyAndDecodeAccessToken, loadHomePageUserData)
 
 
 

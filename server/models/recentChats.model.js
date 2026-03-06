@@ -6,6 +6,9 @@ const recentChatsSchema = new mongoose.Schema({
           ref: "user",
           required: true,
      },
+     email: {
+          type: String
+     },
      recentChats: [
           {
                chatUser: { // add populate method here
@@ -18,7 +21,7 @@ const recentChatsSchema = new mongoose.Schema({
                     required: false,
                     default: ""
                },
-               lastTalkDate: {
+               lastMessagedOn: {
                     type: Date,
                     required: false,
                     default: Date.now

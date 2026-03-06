@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
+import chalk from "chalk";
 
 const DB_CONNECTION_STRING = process.env.DB_MONGOSH_CONNECTION_STRING;
 
 async function connectToDB() {
     try {
         const connectionInstance = await mongoose.connect(`${DB_CONNECTION_STRING}`, { dbName: "users" });
-        console.log("DB connected successfully || PORT: " + connectionInstance.connection.port);
+        console.log(chalk.cyan("DB connected successfully || PORT: " + connectionInstance.connection.port));
         return;
 
     } catch (error) {
-        console.log("Error in database folder :", error)
-        console.log("Error connecting to Users database!!!");
+        console.log("Error in (server/database/connectDB.js) folder :", error)
+        console.log(chalk.bgRedBright("Error connecting to Users database!!!"));
         throw error;
     }
 }
