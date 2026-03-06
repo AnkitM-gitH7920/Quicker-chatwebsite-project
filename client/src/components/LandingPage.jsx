@@ -1,7 +1,7 @@
-import "./landing-page.css";
-import "../../css/server-responseDisplay-overlay.css";
+import "./../css/landing-page.css";
+import "../css/server-responseDisplay-overlay.css";
 
-import axiosAPI from "../../utils/axiosInterceptor.utils";
+import axiosAPI from "../utils/axiosInterceptor.utils";
 import { useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { Icon } from "@iconify/react";
@@ -63,16 +63,7 @@ export default function LandingPage() {
           }
 
           if (error.isRefreshTokenExpired) {
-               setServerResponseInfo({
-                    status: error.response?.data?.status,
-                    code: error.response?.data?.code,
-                    message: error.response?.data?.message
-               })
-               setResponseDisplayOptRedirectionInfo({
-                    redirectingURL: "/login",
-                    redirectingTitle: "Login Again"
-               })
-               setShowServerResponseWindow(true);
+               navigate("/login", { replace: true })
                return;
           }
 

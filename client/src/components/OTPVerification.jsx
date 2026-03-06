@@ -1,7 +1,7 @@
-import "./otp-verification.css";
-import "../../css/server-responseDisplay-overlay.css";
+import "../css/otp-verification.css";
+import "../css/server-responseDisplay-overlay.css";
 
-import ProgressLoader from "../Loaders/ProgressLoader";
+import ProgressLoader from "./Loaders/ProgressLoader";
 import axios from "axios";
 import { useRef, useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";

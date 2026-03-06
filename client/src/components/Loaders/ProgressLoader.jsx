@@ -1,4 +1,4 @@
-import "./progressLoader.css";
+import "../../css/progressLoader.css";
 import "../../css/utilities.css";
 
 function ProgressLoader() {
