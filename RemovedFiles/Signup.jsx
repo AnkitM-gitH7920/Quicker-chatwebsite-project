@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 // Components imports
 import { Icon } from "@iconify/react";
-import ProgressLoader from "./Loaders/ProgressLoader.jsx";
+import ProgressLoader from "../client/src/components/Loaders/ProgressLoader.jsx";
 
 
 function Signup() {
@@ -32,10 +32,7 @@ function Signup() {
     const passwordErrorContainerRef = useRef(null);
     const passwordErrorInfoRef = useRef(null);
     const serverResponseDisplayReference = useRef(null);
-
-    // !!PENDING: testing access token verification
-    // useEffect
-
+    
     // HANDLES :- Live Email Validation
     useEffect(() => {
         if (!email) {

@@ -1,6 +1,5 @@
 import UserDashboard from "./components/Home/Home";
 import Login from "./components//Login";
-import Signup from "./components/Signup";
 import OTPVerificationPage from "./components/OTPVerification.jsx";
 import NotFoundPage from "./components/ErrorPages/NotFound.jsx";
 import ServerErrorPage from "./components/ErrorPages/Error.jsx";
@@ -22,8 +21,8 @@ function App() {
 
         {/* General routes */}
         <Route path="/" element={ <LandingPage />}></Route>
-        <Route path="/signup" element={<Signup />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        {/* <Route path="/signup" element={<Signup />}></Route> <-- removed */}
+        <Route path="/login" element={<Login />}></Route> {/* <-- modified to passwordless auth */}
         <Route path="/verify-otp" element={<OTPVerificationPage />}></Route>
 
         {/* Error routes */}
